@@ -1,4 +1,5 @@
 <?php
+require('./inc/functions.php');
 require_once('./inc/db.php');
 
 $stmt = $db->query('select * from entries');
@@ -33,7 +34,7 @@ $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="entry-list">
                 <?php
                 foreach ($articles as $a) {
-                    $dateString = date('F d, Y', strtotime($a['date']));
+                    $dateString = dateString($a['date']);
                     echo "
                         <article>
                             <h2><a href='detail.php?id=$a[id]'>$a[title]</a></h2>
