@@ -2,7 +2,7 @@
 require('./inc/functions.php');
 require_once('./inc/db.php');
 
-$stmt = $db->query('select * from entries');
+$stmt = $db->query('select * from entries ORDER BY date DESC');
 $articles = $stmt->fetchAll();
 
 
