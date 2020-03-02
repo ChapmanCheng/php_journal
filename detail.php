@@ -35,13 +35,14 @@ require_once('./inc/header.php');
                     <p><?php echo $article['learned']; ?></p>
                 </div>
                 <?php
+
                 if (!empty($article['resources'])) { ?>
                     <div class="entry">
                         <h3>Resources to Remember:</h3>
                         <ul>
                             <?php
-                            foreach ($article['resources'] as $resource)
-                                echo "<li><a href=''>$resource</a></li>";
+                            foreach (explode(',', $article['resources']) as $resource)
+                                echo "<li><a href='$resource'>$resource</a></li>";
                             ?>
                         </ul>
                     </div>
