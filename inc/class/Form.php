@@ -1,5 +1,5 @@
 <?php
-class Journal
+class Form
 {
     private $title;
     private $date;

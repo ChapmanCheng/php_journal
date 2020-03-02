@@ -1,11 +1,11 @@
 <?php
 
-require('./inc/class/Journal.php');
+require('./inc/class/Form.php');
 require('./inc/functions.php');
 require_once('./inc/db.php');
 $formURL =  $_SERVER['PHP_SELF'];
 
-$j = new Journal();
+$j = new Form();
 
 if (isset($_GET['id'])) {
     $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
@@ -22,9 +22,9 @@ if (isset($_GET['id'])) {
 }
 // } else {
 
-// if (Journal::hasPostData()) {
+// if (Form::hasPostData()) {
 // create new entry
-//     $journal = new Journal();
+//     $journal = new Form();
 //     $journal->retrievePostData();
 //     $journal->validateDate();
 //     $journal->linkDatabase($db);
@@ -40,7 +40,7 @@ if (isset($_GET['id'])) {
 // if ($journal->checkExist(['title', 'date', 'time_spent', 'learned'])) {
 /**
  * vardump
- * object(Journal)#2 (5) { 
+ * object(Form)#2 (5) { 
  *  ["title"]=> string(6) "foobar" 
  *  ["date"]=> string(10) "2020-03-03" 
  *  ["time_spent"]=> string(7) "3 hours" 
