@@ -46,7 +46,7 @@ class Journal
         if ($this->checkExist(['title', 'date', 'time_spent', 'learned'])) {
             $sql = 'INSERT INTO entries (title, date, time_spent, learned, resources)
                     VALUES (:title, :date, :time_spent, :learned, :resources)';
-            $this->db->prepare($sql)->execute($this->data);
+            return $this->db->prepare($sql)->execute($this->data);
         }
     }
 }
