@@ -7,9 +7,11 @@ class Journal
     // private $learn;
     // private $resources;
     private $data = array();
+    private $db;
 
-    public function __construct()
+    public function __construct($db)
     {
+        $this->db = $db;
         foreach ($_POST as $key => $value) {
             $this->data[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_STRING);
         }
@@ -38,5 +40,13 @@ class Journal
     {
         $timestamp = strtotime($this->time_spent);
         return date('F d, Y', $timestamp);
+    }
+    public function createNewEntry()
+    {
+        if ($this->checkExist(['title', 'date', 'time_spent', 'learned'])) {
+            $sql = 'INSERT INTO entries (title, date, time_spent, learned, resources)
+                    VALUES (:title, :date, :time_spent, :learned, :resources)';
+            $this->db->prepare($sql)->execute($this->data);
+        }
     }
 }

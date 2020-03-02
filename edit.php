@@ -6,18 +6,20 @@ require_once('./inc/db.php');
 
 $formURL =  $_SERVER['PHP_SELF'];
 
-if (!empty($_POST)) {
-};
 
 if (isset($_GET['id'])) {
     $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
     // update database
     $formURL .= "?id=$id";
 } else {
-    // create new entry
-    $jnl = new Journal();
+    if (!empty($_POST)) {
+        // create new entry
+        $journal = new Journal($db);
+        if ($journal->createNewEntry())
+            header('Location: ' . $_SERVER['SERVER_NAME']);
+    }
 
-    // if ($jnl->checkExist(['title', 'date', 'time_spent', 'learned'])) {
+    // if ($journal->checkExist(['title', 'date', 'time_spent', 'learned'])) {
     /**
      * vardump
      * object(Journal)#2 (5) { 
@@ -28,17 +30,17 @@ if (isset($_GET['id'])) {
      *  ["resources"]=> string(0) "" }
      */
 
-    if ($jnl->checkExist(['title', 'date', 'time_spent', 'learned'])) {
-        $sql = 'INSERT INTO entries (title, date, time_spent, learned, resources)
-                VALUES (:title, :date, :time_spent, :learned, :resources)';
-        $stmt = $db->prepare($sql);
-        $stmt->execute($jnl->data);
-        // $stmt->bindParam(':title', $data['title'], PDO::PARAM_STR);
-        // $stmt->bindParam(':date', $data['date'], PDO::PARAM_STR);
-        // $stmt->bindParam(':time_spent', $data['time_spent'], PDO::PARAM_STR);
-        // $stmt->bindParam(':learnd', $data['learned'], PDO::PARAM_STR);
-        // $stmt->bindParam(':resources', $data['resources'], PDO::PARAM_STR);
-    }
+    // if ($journal->checkExist(['title', 'date', 'time_spent', 'learned'])) {
+    //     $sql = 'INSERT INTO entries (title, date, time_spent, learned, resources)
+    //             VALUES (:title, :date, :time_spent, :learned, :resources)';
+    //     $stmt = $db->prepare($sql);
+    //     $stmt->execute($journal->data);
+    // $stmt->bindParam(':title', $data['title'], PDO::PARAM_STR);
+    // $stmt->bindParam(':date', $data['date'], PDO::PARAM_STR);
+    // $stmt->bindParam(':time_spent', $data['time_spent'], PDO::PARAM_STR);
+    // $stmt->bindParam(':learnd', $data['learned'], PDO::PARAM_STR);
+    // $stmt->bindParam(':resources', $data['resources'], PDO::PARAM_STR);
+    // }
 }
 require_once('./inc/header.php');
 ?>
@@ -49,7 +51,7 @@ require_once('./inc/header.php');
             <h2><?php echo isset($_GET['id']) ?  'Edit Entry' : 'New Entry'; ?></h2>
             <form method="POST" action="<?php echo $formURL; ?>">
                 <label for="title"> Title</label>
-                <input id="title" type="text" name="title"><br>
+                <input id="title" type="text" name="title" placeholder="<?php if (isset($journal))  echo $journal->title; ?>"><br>
                 <label for="date">Date</label>
                 <input id="date" type="date" name="date"><br>
                 <label for="time-spent"> Time Spent</label>
