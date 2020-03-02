@@ -49,17 +49,17 @@ class Form
      */
     public function isEmpty($suppliedKeys = null)
     {
+        // ? cannot use array_filter()
         $vars = get_object_vars($this);
 
-        foreach ($vars as $key => $val)
+        foreach ($vars as $key => $val) {
             if (
-                is_null($suppliedKeys) // default 
-                || in_array($key, $suppliedKeys) // if include in key criteria
+                empty($val) // if value is empty 
+                && (is_null($suppliedKeys) // if no paramter provided, or 
+                    || in_array($key, $suppliedKeys)) // if include in keys parameter
             )
-                if (empty($val)) {
-                    echo "$key and $val is empty";
-                    return true;
-                }
+                return $key;
+        }
         return false;
     }
 

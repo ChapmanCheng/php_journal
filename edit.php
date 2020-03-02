@@ -41,7 +41,7 @@ if (isset($_GET['id'])) {
 if (!empty($_POST)) {
     // if user is redirected from submit w/ POST data
     $form->validateDate();
-    if (!$form->isEmpty(['title', 'date', 'time_spent', 'learned']))
+    if (!$form->isEmpty(['title', 'date', 'time_spent', 'learned'])) {
 
         if (isset($_GET['id'])) {
             // update post
@@ -75,6 +75,8 @@ if (!empty($_POST)) {
                 die($e->getMessage());
             }
         }
+    } else
+        $missingKey = $form->isEmpty(['title', 'date', 'time_spent', 'learned']);
 }
 
 require_once('./inc/header.php');
@@ -84,6 +86,15 @@ require_once('./inc/header.php');
         <div class="<?php echo isset($_GET['id']) ?  'edit-entry' : 'new-entry'; ?>">
 
             <h2><?php echo isset($_GET['id']) ?  'Edit Entry' : 'New Entry'; ?></h2>
+
+            <?php if (isset($missingKey)) { ?>
+                <!-- copy from w3schools  -->
+                <!-- https://www.w3schools.com/howto/howto_js_alert.asp -->
+                <div class='alert'>
+                    <span class='closebtn' onclick='this.parentElement.style.display="none"'>&times;</span>
+                    <?php echo "$missingKey cannot be empty"; ?>
+                </div>
+            <?php }; ?>
 
             <form method="POST" action="<?php echo $actionURL; ?>">
 
