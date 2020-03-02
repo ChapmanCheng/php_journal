@@ -3,13 +3,13 @@
 require('./inc/class/Form.php');
 require('./inc/functions.php');
 require_once('./inc/db.php');
-$formURL =  $_SERVER['PHP_SELF'];
+$actionURL =  $_SERVER['PHP_SELF'];
 
-$j = new Form();
+$form = new Form();
 
 if (isset($_GET['id'])) {
     $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
-    $formURL .= "?id=$id";
+    $actionURL .= "?id=$id";
 
     // get data from database
     $sql = 'SELECT * FROM entries where id = :id';
@@ -18,48 +18,48 @@ if (isset($_GET['id'])) {
     $stmt->execute();
 
     $data = $stmt->fetch(PDO::FETCH_ASSOC);
-    $j->insertData($data);
+    $form->insertData($data);
 }
-// } else {
 
-// if (Form::hasPostData()) {
-// create new entry
-//     $journal = new Form();
-//     $journal->retrievePostData();
-//     $journal->validateDate();
-//     $journal->linkDatabase($db);
+if (!empty($_POST)) {
+    // if user is redirected from submit w/ POST data
+    $form->validateDate();
+    if (!$form->isEmpty(['title', 'date', 'time_spent', 'learned']))
 
-//     try {
-//         $journal->createNewEntry();
-//         header('Location: ' . '/php_journal');
-//     } catch (Exception $e) {
-//         die($e->getMessage());
-//     }
-// }
+        if (isset($_GET['id'])) {
+            // update post
+            try {
+                $sql = 'UPDATE entries 
+                        SET title = :title, date = :date, time_spent = :time_spent, learned = :learned, resources = :resources
+                        WHERE id = :id;';
+                $stmt = $db->prepare($sql);
+                $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+                $stmt->bindValue(':title', $form->title, PDO::PARAM_STR);
+                $stmt->bindValue(':date', $form->date, PDO::PARAM_STR);
+                $stmt->bindValue(':time_spent', $form->time_spent, PDO::PARAM_STR);
+                $stmt->bindValue(':learned', $form->learned, PDO::PARAM_STR);
+                $stmt->bindValue(':resources', $form->resources, PDO::PARAM_STR);
 
-// if ($journal->checkExist(['title', 'date', 'time_spent', 'learned'])) {
-/**
- * vardump
- * object(Form)#2 (5) { 
- *  ["title"]=> string(6) "foobar" 
- *  ["date"]=> string(10) "2020-03-03" 
- *  ["time_spent"]=> string(7) "3 hours" 
- *  ["learn"]=> string(7) "nothing" 
- *  ["resources"]=> string(0) "" }
- */
+                $stmt->execute();
+                header('Location: ' . '/php_journal');
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
+        } else {
+            // create post
+            try {
+                $sql = 'INSERT INTO entries (title, date, time_spent, learned, resources)
+                            VALUES (:title, :date, :time_spent, :learned, :resources)';
+                $stmt = $db->prepare($sql);
 
-// if ($journal->checkExist(['title', 'date', 'time_spent', 'learned'])) {
-//     $sql = 'INSERT INTO entries (title, date, time_spent, learned, resources)
-//             VALUES (:title, :date, :time_spent, :learned, :resources)';
-//     $stmt = $db->prepare($sql);
-//     $stmt->execute($journal->data);
-// $stmt->bindParam(':title', $data['title'], PDO::PARAM_STR);
-// $stmt->bindParam(':date', $data['date'], PDO::PARAM_STR);
-// $stmt->bindParam(':time_spent', $data['time_spent'], PDO::PARAM_STR);
-// $stmt->bindParam(':learnd', $data['learned'], PDO::PARAM_STR);
-// $stmt->bindParam(':resources', $data['resources'], PDO::PARAM_STR);
-// }
-// }
+                $stmt->execute($form->getAssoArrayProps());
+                header('Location: ' . '/php_journal');
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
+        }
+}
+
 require_once('./inc/header.php');
 ?>
 <section>
@@ -68,22 +68,22 @@ require_once('./inc/header.php');
 
             <h2><?php echo isset($_GET['id']) ?  'Edit Entry' : 'New Entry'; ?></h2>
 
-            <form method="POST" action="<?php echo $formURL; ?>">
+            <form method="POST" action="<?php echo $actionURL; ?>">
 
                 <label for="title"> Title</label>
-                <input id="title" type="text" name="title" <?php if (isset($j)) echo "value='$j->title'"; ?>><br>
+                <input id="title" type="text" name="title" <?php echo "value='$form->title'"; ?>><br>
 
                 <label for="date">Date</label>
-                <input id="date" type="date" name="date" <?php if (isset($j)) echo "value='$j->date'"; ?>><br>
+                <input id="date" type="date" name="date" <?php echo "value='$form->date'"; ?>><br>
 
                 <label for="time-spent"> Time Spent</label>
-                <input id="time-spent" type="text" name="time_spent" <?php if (isset($j)) echo "value='$j->time_spent'"; ?>><br>
+                <input id="time-spent" type="text" name="time_spent" <?php echo "value='$form->time_spent'"; ?>><br>
 
                 <label for="what-i-learned">What I Learned</label>
-                <textarea id="what-i-learned" rows="5" name="learned"><?php if (isset($j)) echo $j->learned; ?></textarea>
+                <textarea id="what-i-learned" rows="5" name="learned"><?php echo $form->learned; ?></textarea>
 
                 <label for="resources-to-remember">Resources to Remember</label>
-                <textarea id="resources-to-remember" rows="5" name="resources"><?php if (isset($j)) echo $j->resources; ?></textarea>
+                <textarea id="resources-to-remember" rows="5" name="resources"><?php echo $form->resources; ?></textarea>
 
                 <input type="submit" value="Publish Entry" class="button">
 

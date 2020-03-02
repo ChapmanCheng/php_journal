@@ -53,8 +53,10 @@ class Form
                 is_null($suppliedKeys) // default 
                 || in_array($key, $suppliedKeys) // if include in key criteria
             )
-                if (empty($val))
+                if (empty($val)) {
+                    echo "$key and $val is empty";
                     return true;
+                }
         return false;
     }
 
