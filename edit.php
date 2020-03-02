@@ -18,13 +18,11 @@ if (isset($_GET['id'])) {
             $stmt = $db->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
-
             $data = $stmt->fetch();
-
-            $form->insertData($data);
         } catch (Exception $e) {
             die($e->getMessage());
         }
+        $form->insertData($data);
     }
 
     if (isset($_GET['delete']) && $_GET['delete']) {
@@ -56,6 +54,7 @@ if (!empty($_POST)) {
                             resources = :resources
                         WHERE id = :id;';
                 $stmt = $db->prepare($sql);
+
                 $data = $form->getAssoArrayProps();
                 $data['id'] = $id;
                 $stmt->execute($data);
