@@ -49,18 +49,26 @@ require_once('./inc/header.php');
         <div class="<?php echo isset($_GET['id']) ?  'edit-entry' : 'new-entry'; ?>">
 
             <h2><?php echo isset($_GET['id']) ?  'Edit Entry' : 'New Entry'; ?></h2>
+
             <form method="POST" action="<?php echo $formURL; ?>">
+
                 <label for="title"> Title</label>
-                <input id="title" type="text" name="title" placeholder="<?php if (isset($journal))  echo $journal->title; ?>"><br>
+                <input id="title" type="text" name="title" <?php if (isset($journal)) echo "value='$journal->title'"; ?>><br>
+
                 <label for="date">Date</label>
-                <input id="date" type="date" name="date"><br>
+                <input id="date" type="date" name="date" <?php if (isset($journal)) echo "value='$journal->date'"; ?>><br>
+
                 <label for="time-spent"> Time Spent</label>
-                <input id="time-spent" type="text" name="time_spent"><br>
+                <input id="time-spent" type="text" name="time_spent" <?php if (isset($journal)) echo "value='$journal->time_spent'"; ?>><br>
+
                 <label for="what-i-learned">What I Learned</label>
-                <textarea id="what-i-learned" rows="5" name="learned"></textarea>
+                <textarea id="what-i-learned" rows="5" name="learned"><?php if (isset($journal)) echo $journal->learned; ?></textarea>
+
                 <label for="resources-to-remember">Resources to Remember</label>
-                <textarea id="resources-to-remember" rows="5" name="resources"></textarea>
+                <textarea id="resources-to-remember" rows="5" name="resources"><?php if (isset($journal)) echo $journal->resources; ?></textarea>
+
                 <input type="submit" value="Publish Entry" class="button">
+
                 <a href="#" class="button button-secondary">Cancel</a>
             </form>
         </div>
