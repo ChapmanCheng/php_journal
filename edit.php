@@ -1,6 +1,6 @@
 <?php
 
-require('./inc/class/Form.php');
+require('./inc/Form.php');
 require('./inc/functions.php');
 require_once('./inc/db.php');
 $actionURL =  $_SERVER['PHP_SELF'];
