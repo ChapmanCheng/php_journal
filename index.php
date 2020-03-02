@@ -3,7 +3,7 @@ require('./inc/functions.php');
 require_once('./inc/db.php');
 
 $stmt = $db->query('select * from entries');
-$articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$articles = $stmt->fetchAll();
 
 
 require_once('./inc/header.php');

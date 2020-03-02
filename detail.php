@@ -5,12 +5,14 @@ require_once('./inc/db.php');
 if (isset($_GET['id'])) {
     $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
-    $stmt = $db->prepare('select * from entries where id = :id');
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
-    $article = $stmt->fetch(PDO::FETCH_ASSOC);
-} else {
-    die('No journal entry selected');
+    try {
+        $stmt = $db->prepare('select * from entries where id = :id');
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $article = $stmt->fetch();
+    } catch (Exception $e) {
+        die($e->getMessage());
+    }
 }
 
 require_once('./inc/header.php');
@@ -36,12 +38,9 @@ require_once('./inc/header.php');
                         <h3>Resources to Remember:</h3>
                         <ul>
                             <?php
-                            foreach ($article['resources'] as $re)
-                                echo "<li><a href=''>$re</a></li>";
+                            foreach ($article['resources'] as $resource)
+                                echo "<li><a href=''>$resource</a></li>";
                             ?>
-                            <!-- <li><a href="">Cras accumsan cursus ante, non dapibus tempor</a></li>
-                            <li>Nunc ut rhoncus felis, vel tincidunt neque</li>
-                            <li><a href="">Ipsum dolor sit amet</a></li> -->
                         </ul>
                     </div>
                 <?php }; ?>

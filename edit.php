@@ -12,13 +12,16 @@ if (isset($_GET['id'])) {
     $actionURL .= "?id=$id";
 
     // get data from database
-    $sql = 'SELECT * FROM entries where id = :id';
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
+    if (empty($_POST)) {
+        $sql = 'SELECT * FROM entries where id = :id';
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
 
-    $data = $stmt->fetch(PDO::FETCH_ASSOC);
-    $form->insertData($data);
+        $data = $stmt->fetch();
+
+        $form->insertData($data);
+    }
 }
 
 if (!empty($_POST)) {
@@ -28,21 +31,19 @@ if (!empty($_POST)) {
 
         if (isset($_GET['id'])) {
             // update post
-            // ! cannot update
             try {
                 $sql = 'UPDATE entries 
-                        SET title = :title, date = :date, time_spent = :time_spent, learned = :learned, resources = :resources
+                        SET title = :title, 
+                            date = :date, 
+                            time_spent = :time_spent, 
+                            learned = :learned, 
+                            resources = :resources
                         WHERE id = :id;';
                 $stmt = $db->prepare($sql);
-                $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-                $stmt->bindValue(':title', $form->title, PDO::PARAM_STR);
-                $stmt->bindValue(':date', $form->date, PDO::PARAM_STR);
-                $stmt->bindValue(':time_spent', $form->time_spent, PDO::PARAM_STR);
-                $stmt->bindValue(':learned', $form->learned, PDO::PARAM_STR);
-                $stmt->bindValue(':resources', $form->resources, PDO::PARAM_STR);
-
-                $stmt->execute();
-                header('Location: ' . '/php_journal');
+                $data = $form->getAssoArrayProps();
+                $data['id'] = $id;
+                $stmt->execute($data);
+                header('Location: /');
             } catch (Exception $e) {
                 die($e->getMessage());
             }
@@ -54,7 +55,7 @@ if (!empty($_POST)) {
                 $stmt = $db->prepare($sql);
 
                 $stmt->execute($form->getAssoArrayProps());
-                header('Location: ' . '/php_journal');
+                header('Location: /');
             } catch (Exception $e) {
                 die($e->getMessage());
             }
