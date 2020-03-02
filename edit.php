@@ -13,14 +13,30 @@ if (isset($_GET['id'])) {
 
     // get data from database
     if (empty($_POST)) {
-        $sql = 'SELECT * FROM entries where id = :id';
-        $stmt = $db->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
+        try {
+            $sql = 'SELECT * FROM entries where id = :id';
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
 
-        $data = $stmt->fetch();
+            $data = $stmt->fetch();
 
-        $form->insertData($data);
+            $form->insertData($data);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+    }
+
+    if (isset($_GET['delete']) && $_GET['delete']) {
+        try {
+            $sql = 'DELETE FROM entries WHERE id = :id';
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            header('Location: /');
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
     }
 }
 

@@ -13,7 +13,9 @@ if (isset($_GET['id'])) {
     } catch (Exception $e) {
         die($e->getMessage());
     }
-}
+} else
+    header('Location: /');
+
 
 require_once('./inc/header.php');
 ?>
@@ -49,6 +51,7 @@ require_once('./inc/header.php');
     </div>
     <div class="edit">
         <p><a href="edit.php?id=<?php echo $article['id']; ?>">Edit Entry</a></p>
+        <p><a href="edit.php?delete=1&id=<?php echo $article['id']; ?>">Delete Entry</a></p>
     </div>
 </section>
 <?php require_once('./inc/footer.php');
