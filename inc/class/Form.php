@@ -31,7 +31,10 @@ class Form
         }
     }
 
-
+    /**
+     * add array as property of instant object
+     * @param {array} an associate array retrieved from SQL
+     */
     public function insertData($asso_array)
     {
         foreach ($asso_array as $key => $val)

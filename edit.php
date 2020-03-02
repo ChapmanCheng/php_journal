@@ -28,6 +28,7 @@ if (!empty($_POST)) {
 
         if (isset($_GET['id'])) {
             // update post
+            // ! cannot update
             try {
                 $sql = 'UPDATE entries 
                         SET title = :title, date = :date, time_spent = :time_spent, learned = :learned, resources = :resources
